@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QNB Tele-sales | Credit Card Cross-Selling</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060910;
+  --bg2: #0d1117;
+  --bg3: #131a24;
+  --bg4: #192030;
+  --accent: #8B0000;
+  --accent2: #b91c1c;
+  --accentl: rgba(139,0,0,0.15);
+  --gold: #c9a84c;
+  --green: #16a34a;
+  --greenl: rgba(22,163,74,0.15);
+  --red: #dc2626;
+  --redl: rgba(220,38,38,0.12);
+  --yellow: #d97706;
+  --yellowl: rgba(217,119,6,0.12);
+  --orange: #ea580c;
+  --orangel: rgba(234,88,12,0.12);
+  --blue: #2563eb;
+  --bluel: rgba(37,99,235,0.12);
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --text: #f0f4f8;
+  --text2: #8b9ab0;
+  --text3: #4a5568;
+  --r: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+#login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--bg); position: relative; overflow: hidden;
+}
+#login-screen::before {
+  content: ''; position: absolute; width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(139,0,0,0.1) 0%, transparent 70%);
+  top: -100px; left: -100px; pointer-events: none;
+}
+.login-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 3rem 2.5rem;
+  width: 100%; max-width: 420px; position: relative; z-index: 1;
+}
+.login-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 2rem; }
+.logo-mark {
+  width: 44px; height: 44px; background: var(--accent); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: #fff;
+}
+.login-logo-text h1 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; line-height: 1; }
+.login-logo-text p { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+.login-heading { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+.login-sub { font-size: 0.85rem; color: var(--text2); margin-bottom: 2rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-group input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--r); padding: 11px 14px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none; transition: border 0.15s;
+}
+.form-group input:focus { border-color: var(--accent2); }
+.form-group input::placeholder { color: var(--text3); }
+.btn-login {
+  width: 100%; background: var(--accent); color: #fff; border: none;
+  padding: 13px; border-radius: var(--r); font-family: 'Inter', sans-serif;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: all 0.2s;
+}
+.btn-login:hover { background: var(--accent2); transform: translateY(-1px); }
+.login-error {
+  background: var(--redl); border: 1px solid rgba(220,38,38,0.3);
+  border-radius: var(--r); padding: 10px 14px; font-size: 0.83rem;
+  color: #fca5a5; margin-top: 1rem; display: none;
+}
+.demo-creds {
+  margin-top: 1.5rem; background: var(--bg3); border-radius: var(--r);
+  padding: 1rem; font-size: 0.78rem; color: var(--text2);
+}
+.demo-creds strong { color: var(--text); display: block; margin-bottom: 6px; }
+.demo-creds code { color: #93c5fd; }
+
+header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem; height: 58px; display: flex; align-items: center;
+  justify-content: space-between; position: sticky; top: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.h-logo { display: flex; align-items: center; gap: 10px; }
+.h-logo .logo-mark { width: 30px; height: 30px; font-size: 0.7rem; border-radius: 7px; }
+.h-logo span { font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 800; }
+.h-div { width: 1px; height: 18px; background: var(--border2); }
+.h-page { font-size: 0.8rem; color: var(--text2); }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.user-pill {
+  display: flex; align-items: center; gap: 8px; background: var(--bg3);
+  border: 1px solid var(--border2); border-radius: 20px; padding: 4px 12px 4px 5px; font-size: 0.78rem;
+}
+.u-av {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--accent);
+  display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700;
+}
+.role-badge { font-size: 0.62rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.rb-admin { background: var(--accentl); color: #fca5a5; border: 1px solid rgba(139,0,0,0.3); }
+.rb-staff { background: var(--bluel); color: #93c5fd; border: 1px solid rgba(37,99,235,0.3); }
+.btn-logout {
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  padding: 5px 12px; border-radius: 7px; font-family: 'Inter', sans-serif;
+  font-size: 0.76rem; cursor: pointer; transition: all 0.13s;
+}
+.btn-logout:hover { border-color: var(--red); color: #f87171; }
+
+#admin-view { display: none; padding: 1.5rem; overflow-y: auto; }
+.dash-hdr { margin-bottom: 1.5rem; }
+.dash-hdr h2 { font-family: 'Syne', sans-serif; font-size: 1.35rem; font-weight: 800; }
+.dash-hdr p { font-size: 0.8rem; color: var(--text2); margin-top: 4px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.kpi {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1rem 1.1rem; position: relative; overflow: hidden;
+}
+.kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.kpi-g::before { background: var(--green); }
+.kpi-r::before { background: var(--red); }
+.kpi-y::before { background: var(--yellow); }
+.kpi-o::before { background: var(--orange); }
+.kpi-b::before { background: var(--blue); }
+.kpi-a::before { background: var(--accent); }
+.kpi .lbl { font-size: 0.7rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.kpi .val { font-size: 1.9rem; font-weight: 700; line-height: 1; }
+.kpi .sub { font-size: 0.72rem; color: var(--text2); margin-top: 5px; }
+.sec-title {
+  font-size: 0.7rem; font-weight: 700; color: var(--text2); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 0.9rem; padding-bottom: 7px; border-bottom: 1px solid var(--border);
+}
+.tbl-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 1.5rem; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
+thead tr { background: var(--bg3); }
+th { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text2); padding: 9px 13px; text-align: left; white-space: nowrap; }
+td { font-size: 0.82rem; padding: 10px 13px; border-top: 1px solid var(--border); }
+tr:hover td { background: rgba(255,255,255,0.02); }
+.mini-bar { height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; min-width: 60px; }
+.mini-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
+.sp { font-size: 0.68rem; padding: 3px 8px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
+.sp-a { background: var(--greenl); color: #4ade80; }
+.sp-r { background: var(--redl); color: #f87171; }
+.sp-n { background: var(--yellowl); color: #fbbf24; }
+.sp-c { background: var(--bluel); color: #60a5fa; }
+.sp-t { background: var(--orangel); color: #fb923c; }
+.sp-p { background: rgba(107,114,128,0.15); color: #9ca3af; }
+.upload-zone {
+  border: 1.5px dashed var(--border2); border-radius: var(--r);
+  padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s;
+  background: var(--bg2); margin-bottom: 1.5rem;
+}
+.upload-zone:hover { border-color: var(--accent); background: var(--bg3); }
+.upload-zone h3 { font-size: 1rem; margin-bottom: 6px; }
+.upload-zone p { font-size: 0.8rem; color: var(--text2); }
+.btn-new-sheet {
+  background: var(--accent); color: #fff; border: none; padding: 7px 16px;
+  border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.78rem;
+  font-weight: 600; cursor: pointer; transition: all 0.13s;
+}
+.btn-new-sheet:hover { background: var(--accent2); }
+.tbl-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 13px; border-bottom: 1px solid var(--border); }
+.tbl-header h3 { font-size: 0.85rem; font-weight: 600; }
+.exp-row { display: flex; gap: 10px; margin-top: 0.5rem; }
+.btn-exp {
+  background: var(--bg2); border: 1px solid var(--border2); color: var(--text);
+  padding: 8px 16px; border-radius: 8px; font-family: 'Inter', sans-serif;
+  font-size: 0.8rem; cursor: pointer; transition: all 0.13s; display: flex; align-items: center; gap: 6px;
+}
+.btn-exp:hover { border-color: var(--accent); color: #fca5a5; }
+
+#employee-view { display: none; height: calc(100vh - 58px); }
+.emp-layout { display: grid; grid-template-columns: 290px 1fr; height: 100%; }
+.emp-sb { background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.emp-sb-hd { padding: 1rem; border-bottom: 1px solid var(--border); }
+.emp-sb-hd h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 9px; }
+.s-inp {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px 11px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 0.82rem; outline: none; transition: border 0.13s;
+}
+.s-inp:focus { border-color: var(--accent2); }
+.s-inp::placeholder { color: var(--text3); }
+.frow { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 1rem; border-bottom: 1px solid var(--border); }
+.ftab {
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  padding: 3px 10px; border-radius: 20px; font-family: 'Inter', sans-serif;
+  font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.13s;
+}
+.ftab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.cli-list { overflow-y: auto; flex: 1; padding: 6px; }
+.cli-list::-webkit-scrollbar { width: 3px; }
+.cli-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.cli-row {
+  padding: 9px 11px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; gap: 9px;
+  border: 1px solid transparent; margin-bottom: 3px; transition: all 0.13s;
+}
+.cli-row:hover { background: var(--bg3); }
+.cli-row.active { background: var(--bg3); border-color: var(--accent); }
+.c-av {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+}
+.c-info { flex: 1; min-width: 0; }
+.c-name { font-size: 0.83rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.c-ph { font-size: 0.72rem; color: var(--text2); }
+.det-panel { overflow-y: auto; padding: 1.5rem; background: var(--bg); flex: 1; }
+.det-panel::-webkit-scrollbar { width: 3px; }
+.det-panel::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.empty-p { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text2); gap: 10px; }
+.empty-p .ico { font-size: 2.2rem; opacity: 0.35; }
+.det-hd { display: flex; align-items: center; gap: 14px; margin-bottom: 1.4rem; }
+.det-av { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0; }
+.det-ti h2 { font-size: 1.15rem; font-weight: 700; }
+.det-ti p { font-size: 0.78rem; color: var(--text2); }
+.info-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 9px; margin-bottom: 1.4rem; }
+.ic { background: var(--bg2); border: 1px solid var(--border); border-radius: 9px; padding: 11px 13px; }
+.ic .lbl { font-size: 0.66rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+.ic .val { font-size: 0.88rem; font-weight: 600; }
+.prog-w { margin-bottom: 1.4rem; }
+.prog-lbl { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text2); margin-bottom: 5px; }
+.prog-bar { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #e74c3c); border-radius: 2px; transition: width 0.5s; }
+.call-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; }
+.call-title { font-size: 0.7rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.9rem; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+.res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 7px; margin-bottom: 0.8rem; }
+.res-btn {
+  padding: 11px 7px; border-radius: 9px; border: 1.5px solid var(--border2);
+  background: var(--bg3); color: var(--text2); font-family: 'Inter', sans-serif;
+  font-size: 0.77rem; font-weight: 600; cursor: pointer; transition: all 0.13s;
+  text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;
+}
+.res-btn:hover { border-color: var(--accent); color: var(--text); }
+.res-btn .ico { font-size: 1.15rem; }
+.sel-accepted { background: var(--greenl) !important; border-color: #16a34a !important; color: #4ade80 !important; }
+.sel-rejected { background: var(--redl) !important; border-color: var(--red) !important; color: #f87171 !important; }
+.sel-noanswer { background: var(--yellowl) !important; border-color: var(--yellow) !important; color: #fbbf24 !important; }
+.sel-callback { background: var(--bluel) !important; border-color: var(--blue) !important; color: #60a5fa !important; }
+.sel-thinking { background: var(--orangel) !important; border-color: var(--orange) !important; color: #fb923c !important; }
+.extra { display: none; flex-direction: column; gap: 11px; padding-top: 1rem; border-top: 1px solid var(--border); margin-top: 4px; animation: fu 0.18s ease; }
+.extra.show { display: flex; }
+@keyframes fu { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.fg { display: flex; flex-direction: column; gap: 5px; }
+.fg label { font-size: 0.72rem; font-weight: 600; color: var(--text2); }
+.fg input, .fg select, .fg textarea {
+  background: var(--bg3); border: 1px solid var(--border2); border-radius: 8px;
+  padding: 8px 11px; color: var(--text); font-family: 'Inter', sans-serif;
+  font-size: 0.82rem; outline: none; transition: border 0.13s;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--accent2); }
+.fg select option { background: var(--bg2); }
+.fg textarea { resize: vertical; min-height: 68px; }
+.btn-save {
+  width: 100%; margin-top: 1rem; background: var(--accent); color: #fff; border: none;
+  padding: 12px; border-radius: 9px; font-family: 'Inter', sans-serif;
+  font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.btn-save:hover { background: var(--accent2); transform: translateY(-1px); }
+.btn-save:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.saved-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 11px; padding: 1.1rem 1.2rem; margin-bottom: 1rem; }
+.saved-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+.btn-edit {
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  padding: 4px 11px; border-radius: 7px; font-family: 'Inter', sans-serif;
+  font-size: 0.72rem; cursor: pointer; transition: all 0.13s;
+}
+.btn-edit:hover { border-color: var(--blue); color: #93c5fd; }
+.saved-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.sf { font-size: 0.8rem; }
+.sf .k { color: var(--text2); margin-right: 5px; }
+.sf .v { font-weight: 600; }
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--green); color: #fff; padding: 9px 22px;
+  border-radius: 8px; font-size: 0.83rem; font-weight: 600;
+  transition: transform 0.3s; z-index: 999;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+@media (max-width: 768px) {
+  .emp-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .emp-sb { height: 45vh; }
+  .row2 { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-mark">QNB</div>
+      <div class="login-logo-text">
+        <h1>QNB Tele-sales</h1>
+        <p>Credit Card Cross-Selling System</p>
+      </div>
+    </div>
+    <h2 class="login-heading">Sign In</h2>
+    <p class="login-sub">Enter your credentials to continue</p>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="inp-user" placeholder="username" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="inp-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-err">Invalid username or password.</div>
+    <div class="demo-creds">
+      <strong>Demo Credentials:</strong>
+      Admin: <code>admin</code> / <code>admin123</code><br>
+      Staff: <code>mrida</code> / <code>staff123</code> &nbsp;|&nbsp; <code>nourhan</code> / <code>staff123</code>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;flex-direction:column;min-height:100vh;">
+  <header>
+    <div class="header-left">
+      <div class="h-logo">
+        <div class="logo-mark">QNB</div>
+        <span>Tele-sales</span>
+      </div>
+      <div class="h-div"></div>
+      <span class="h-page" id="h-page">Dashboard</span>
+    </div>
+    <div class="header-right">
+      <div class="user-pill">
+        <div class="u-av" id="hav">A</div>
+        <span id="hname" style="font-size:0.78rem;font-weight:500">Admin</span>
+        <span class="role-badge rb-admin" id="hrole">Admin</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- ADMIN -->
+  <div id="admin-view">
+    <div class="dash-hdr">
+      <h2>Global Dashboard</h2>
+      <p>Tele-sales CC Cross-Selling — Batch 01 | 2026</p>
+    </div>
+    <div id="upload-zone" class="upload-zone" onclick="document.getElementById('afile').click()">
+      <div style="font-size:2rem;margin-bottom:8px">📂</div>
+      <h3>Upload Client Sheet</h3>
+      <p>Click to upload Excel (.xlsx) or CSV — columns: Name, Mobile, Age, Address, Staff</p>
+      <input type="file" id="afile" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFile(event)">
+    </div>
+    <div id="dash-content" style="display:none">
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="sec-title">Staff Performance</div>
+      <div class="tbl-wrap">
+        <table><thead><tr>
+          <th>Staff Name</th><th>Allocated</th><th>Contacted</th>
+          <th>Accepted</th><th>Rejected</th><th>No Answer</th><th>Pending</th><th>Progress</th>
+        </tr></thead><tbody id="staff-tbody"></tbody></table>
+      </div>
+      <div class="sec-title">All Client Records</div>
+      <div class="tbl-wrap">
+        <div class="tbl-header">
+          <h3 id="all-cli-count">All Clients</h3>
+          <button class="btn-new-sheet" onclick="document.getElementById('afile').click()">↑ New Sheet</button>
+        </div>
+        <table><thead><tr>
+          <th>#</th><th>Name</th><th>Mobile</th><th>Age</th>
+          <th>Assigned To</th><th>Status</th><th>Card Type</th><th>Limit</th><th>Notes</th>
+        </tr></thead><tbody id="all-tbody"></tbody></table>
+      </div>
+      <div class="exp-row">
+        <button class="btn-exp" onclick="exportAll()">📊 Export Results (Excel)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPLOYEE -->
+  <div id="employee-view">
+    <div class="emp-layout">
+      <div class="emp-sb">
+        <div class="emp-sb-hd">
+          <h3 id="sb-title">My Clients</h3>
+          <input class="s-inp" id="srch" type="text" placeholder="Search name or mobile..." oninput="renderEmpList()">
+        </div>
+        <div class="frow">
+          <button class="ftab active" onclick="setF('all',this)">All</button>
+          <button class="ftab" onclick="setF('pending',this)">Pending</button>
+          <button class="ftab" onclick="setF('accepted',this)">Accepted</button>
+          <button class="ftab" onclick="setF('rejected',this)">Rejected</button>
+          <button class="ftab" onclick="setF('noanswer',this)">No Answer</button>
+          <button class="ftab" onclick="setF('callback',this)">Callback</button>
+        </div>
+        <div class="cli-list" id="cli-list"></div>
+      </div>
+      <div class="det-panel" id="det-panel">
+        <div class="empty-p"><div class="ico">👈</div><p>Select a client to begin</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Saved successfully</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const USERS = {
+  admin:   { pass:'admin123', role:'admin', name:'Admin' },
+  mrida:   { pass:'staff123', role:'staff', name:'Mohamed.RIDA' },
+  nourhan: { pass:'staff123', role:'staff', name:'Nourhan.ALI' },
+  zahra:   { pass:'staff123', role:'staff', name:'Zahra.MAHMOUD' },
+  esraa:   { pass:'staff123', role:'staff', name:'Esraa.M-OMAR' },
+  haidy:   { pass:'staff123', role:'staff', name:'Haidy.YEHIA' },
+  ahmed:   { pass:'staff123', role:'staff', name:'Ahmed.G-METWALLY' },
+  mariam:  { pass:'staff123', role:'staff', name:'Mariam.ATTIA' },
+  nada:    { pass:'staff123', role:'staff', name:'Nada.G-DESOUKY' },
+  shorouk: { pass:'staff123', role:'staff', name:'Shorouk.SHAABAN' },
+  nima:    { pass:'staff123', role:'staff', name:'Nima.HUSSEIN' },
+};
+
+let CU = null, clients = [], results = {}, empF = 'all', selId = null, selSt = {};
+
+function doLogin() {
+  const u = document.getElementById('inp-user').value.trim().toLowerCase();
+  const p = document.getElementById('inp-pass').value;
+  const usr = USERS[u];
+  if (!usr || usr.pass !== p) { document.getElementById('login-err').style.display='block'; return; }
+  document.getElementById('login-err').style.display='none';
+  CU = {...usr, username:u};
+  loadState();
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('hav').textContent = CU.name[0];
+  document.getElementById('hname').textContent = CU.name;
+  const rb = document.getElementById('hrole');
+  if (CU.role==='admin') {
+    rb.textContent='Admin'; rb.className='role-badge rb-admin';
+    document.getElementById('h-page').textContent='Dashboard';
+    document.getElementById('admin-view').style.display='block';
+    document.getElementById('employee-view').style.display='none';
+    renderAdmin();
+  } else {
+    rb.textContent='Staff'; rb.className='role-badge rb-staff';
+    document.getElementById('h-page').textContent='My Clients';
+    document.getElementById('admin-view').style.display='none';
+    document.getElementById('employee-view').style.display='block';
+    renderEmpList();
+  }
+}
+
+function doLogout() {
+  CU=null; selId=null;
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('inp-user').value='';
+  document.getElementById('inp-pass').value='';
+}
+
+function loadState() {
+  try { results = JSON.parse(localStorage.getItem('qnb_res')||'{}'); } catch(e){ results={}; }
+  try { const s=localStorage.getItem('qnb_cli'); if(s) clients=JSON.parse(s); } catch(e){}
+}
+function saveState() {
+  try { localStorage.setItem('qnb_res', JSON.stringify(results)); } catch(e){}
+}
+
+function handleFile(e) {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  if (f.name.endsWith('.csv')) { r.onload=ev=>parseCSV(ev.target.result); r.readAsText(f,'UTF-8'); }
+  else { r.onload=ev=>parseXLSX(ev.target.result); r.readAsArrayBuffer(f); }
+}
+function parseXLSX(data) {
+  try {
+    const wb=XLSX.read(data,{type:'array'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    loadClients(XLSX.utils.sheet_to_json(ws,{defval:''}));
+  } catch(e){ alert('Error reading file'); }
+}
+function parseCSV(text) {
+  const lines=text.trim().split('\n');
+  const hdrs=lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+  const rows=lines.slice(1).map(l=>{ const v=l.split(',').map(x=>x.trim().replace(/"/g,'')); const o={}; hdrs.forEach((h,i)=>o[h]=v[i]||''); return o; });
+  loadClients(rows);
+}
+function nk(k) {
+  const m={name:['name','اسم','الاسم','client name','client_name'],mobile:['mobile','phone','موبايل','تليفون'],age:['age','سن','العمر'],address:['address','عنوان','العنوان'],staff:['staff','موظف','allocation_staff_name','staff_name','allocated_staff','assigned to']};
+  const l=k.toLowerCase().trim();
+  for(const[n,vs] of Object.entries(m)) if(vs.some(v=>v.toLowerCase()===l)) return n;
+  return k;
+}
+function loadClients(rows) {
+  clients=rows.map((r,i)=>{ const n={}; for(const[k,v] of Object.entries(r)) n[nk(k)]=v; n._id=i; if(!n.name) n.name=`Client ${i+1}`; return n; });
+  try { localStorage.setItem('qnb_cli', JSON.stringify(clients)); } catch(e){}
+  document.getElementById('upload-zone').style.display='none';
+  document.getElementById('dash-content').style.display='block';
+  renderAdmin();
+}
+
+const AVC=['#8B0000','#16a34a','#2563eb','#d97706','#7c3aed','#0891b2','#ea580c','#db2777'];
+const avc=id=>AVC[id%AVC.length];
+const ini=name=>{ if(!name) return '?'; const p=name.trim().split(' '); return p.length>=2?p[0][0]+p[1][0]:name[0]; };
+
+function si(id) {
+  const r=results[id];
+  if(!r) return {label:'Pending',cls:'sp-p'};
+  const m={accepted:{label:'Accepted',cls:'sp-a'},rejected:{label:'Rejected',cls:'sp-r'},noanswer:{label:'No Answer',cls:'sp-n'},callback:{label:'Callback',cls:'sp-c'},thinking:{label:'Thinking',cls:'sp-t'}};
+  return m[r.status]||{label:'Pending',cls:'sp-p'};
+}
+
+function renderAdmin() {
+  if(!clients.length){ document.getElementById('upload-zone').style.display='block'; document.getElementById('dash-content').style.display='none'; return; }
+  document.getElementById('upload-zone').style.display='none';
+  document.getElementById('dash-content').style.display='block';
+  const tot=clients.length;
+  const con=Object.keys(results).length;
+  const acc=Object.values(results).filter(r=>r.status==='accepted').length;
+  const rej=Object.values(results).filter(r=>r.status==='rejected').length;
+  const na=Object.values(results).filter(r=>r.status==='noanswer').length;
+  const cb=Object.values(results).filter(r=>r.status==='callback').length;
+  const pnd=tot-con;
+  const rp=tot?Math.round((con/tot)*100):0;
+  const sp=con?Math.round((acc/con)*100):0;
+
+  document.getElementById('kpi-grid').innerHTML=`
+    <div class="kpi kpi-b"><div class="lbl">Total Clients</div><div class="val">${tot.toLocaleString()}</div></div>
+    <div class="kpi kpi-a"><div class="lbl">Contacted</div><div class="val">${con}</div><div class="sub">${rp}% reachability</div></div>
+    <div class="kpi kpi-g"><div class="lbl">Accepted</div><div class="val">${acc}</div><div class="sub">${sp}% success rate</div></div>
+    <div class="kpi kpi-r"><div class="lbl">Rejected</div><div class="val">${rej}</div></div>
+    <div class="kpi kpi-y"><div class="lbl">No Answer</div><div class="val">${na}</div></div>
+    <div class="kpi kpi-o"><div class="lbl">Pending</div><div class="val">${pnd}</div></div>
+  `;
+
+  const staffNames=[...new Set(clients.map(c=>c.staff).filter(Boolean))];
+  document.getElementById('staff-tbody').innerHTML=staffNames.map(name=>{
+    const mine=clients.filter(c=>c.staff===name);
+    const myR=mine.map(c=>results[c._id]).filter(Boolean);
+    const a=myR.filter(r=>r.status==='accepted').length;
+    const rj=myR.filter(r=>r.status==='rejected').length;
+    const na2=myR.filter(r=>r.status==='noanswer').length;
+    const pct=mine.length?Math.round((myR.length/mine.length)*100):0;
+    return `<tr><td><strong>${name}</strong></td><td>${mine.length}</td><td>${myR.length}</td>
+      <td style="color:#4ade80;font-weight:600">${a}</td>
+      <td style="color:#f87171">${rj}</td>
+      <td style="color:#fbbf24">${na2}</td>
+      <td style="color:#9ca3af">${mine.length-myR.length}</td>
+      <td><div style="display:flex;align-items:center;gap:7px"><div class="mini-bar" style="flex:1"><div class="mini-fill" style="width:${pct}%;background:var(--accent)"></div></div><span style="font-size:0.72rem;color:var(--text2)">${pct}%</span></div></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('all-cli-count').textContent=`All Clients (${clients.length})`;
+  document.getElementById('all-tbody').innerHTML=clients.map((c,i)=>{
+    const r=results[c._id]||{};
+    const {label,cls}=si(c._id);
+    return `<tr><td style="color:var(--text2)">${i+1}</td><td><strong>${c.name||'—'}</strong></td>
+      <td style="font-size:0.76rem">${c.mobile||'—'}</td><td>${c.age||'—'}</td>
+      <td style="font-size:0.78rem;color:var(--text2)">${c.staff||'—'}</td>
+      <td><span class="sp ${cls}">${label}</span></td>
+      <td style="font-size:0.76rem">${r.cardType||'—'}</td>
+      <td style="font-size:0.76rem">${r.limit?Number(r.limit).toLocaleString()+' EGP':'—'}</td>
+      <td style="font-size:0.75rem;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.notes||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function myClients() {
+  if(!CU) return [];
+  return clients.filter(c=>{
+    const sv=(c.staff||'').toLowerCase().replace(/[\s._-]/g,'');
+    const mn=CU.name.toLowerCase().replace(/[\s._-]/g,'');
+    return sv===mn;
+  });
+}
+
+function renderEmpList() {
+  const mine=myClients();
+  const srch=(document.getElementById('srch')?.value||'').toLowerCase();
+  const filtered=mine.filter(c=>{
+    const ms=!srch||(c.name||'').toLowerCase().includes(srch)||(c.mobile||'').toString().includes(srch);
+    const r=results[c._id]; const st=r?r.status:'pending';
+    return ms&&(empF==='all'||empF===st);
+  });
+  document.getElementById('sb-title').textContent=`My Clients (${mine.length})`;
+  document.getElementById('cli-list').innerHTML=filtered.map(c=>{
+    const {label,cls}=si(c._id);
+    return `<div class="cli-row${selId===c._id?' active':''}" onclick="selClient(${c._id})">
+      <div class="c-av" style="background:${avc(c._id)}22;color:${avc(c._id)};border:1.5px solid ${avc(c._id)}44">${ini(c.name)}</div>
+      <div class="c-info"><div class="c-name">${c.name}</div><div class="c-ph">${c.mobile||'—'}</div></div>
+      <span class="sp ${cls}" style="font-size:0.65rem">${label}</span>
+    </div>`;
+  }).join('')||'<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:0.8rem">No clients found</div>';
+}
+
+function setF(f,el){ empF=f; document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); renderEmpList(); }
+
+function selClient(id) {
+  selId=id; renderEmpList();
+  const c=clients.find(x=>x._id===id);
+  const r=results[id];
+  const mine=myClients();
+  const done=mine.filter(x=>results[x._id]).length;
+  const pct=mine.length?Math.round((done/mine.length)*100):0;
+  const skip=new Set(['_id','name','mobile','age','address','staff']);
+  const extras=Object.entries(c).filter(([k])=>!skip.has(k)&&c[k]);
+
+  document.getElementById('det-panel').innerHTML=`
+    <div class="det-hd">
+      <div class="det-av" style="background:${avc(id)}22;color:${avc(id)};border:2px solid ${avc(id)}44">${ini(c.name)}</div>
+      <div class="det-ti"><h2>${c.name}</h2><p>${c.mobile||''}</p></div>
+    </div>
+    <div class="prog-w">
+      <div class="prog-lbl"><span>My Progress</span><span>${done}/${mine.length} — ${pct}%</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="info-cards">
+      ${c.mobile?`<div class="ic"><div class="lbl">Mobile</div><div class="val">${c.mobile}</div></div>`:''}
+      ${c.age?`<div class="ic"><div class="lbl">Age</div><div class="val">${c.age}</div></div>`:''}
+      ${c.address?`<div class="ic"><div class="lbl">Address</div><div class="val">${c.address}</div></div>`:''}
+      ${extras.map(([k,v])=>`<div class="ic"><div class="lbl">${k}</div><div class="val">${v}</div></div>`).join('')}
+    </div>
+    <div class="call-box">
+      <div class="call-title">Call Result</div>
+      ${r ? renderSaved(r,id) : renderForm(id)}
+    </div>`;
+}
+
+function renderForm(id) {
+  return `<div class="res-grid">
+    <button class="res-btn" onclick="pickSt(${id},'accepted',this)"><span class="ico">✅</span>Accepted</button>
+    <button class="res-btn" onclick="pickSt(${id},'rejected',this)"><span class="ico">❌</span>Rejected</button>
+    <button class="res-btn" onclick="pickSt(${id},'noanswer',this)"><span class="ico">📵</span>No Answer</button>
+    <button class="res-btn" onclick="pickSt(${id},'callback',this)"><span class="ico">📅</span>Callback</button>
+    <button class="res-btn" onclick="pickSt(${id},'thinking',this)"><span class="ico">🤔</span>Thinking</button>
+  </div>
+  <div class="extra" id="ex-accepted-${id}">
+    <div class="row2">
+      <div class="fg"><label>Card Type</label><select id="f-ct-${id}"><option value="">Select...</option><option>Visa Classic</option><option>Visa Gold</option><option>Visa Platinum</option><option>Mastercard Classic</option><option>Mastercard Gold</option><option>Mastercard Platinum</option></select></div>
+      <div class="fg"><label>Requested Limit (EGP)</label><input type="number" id="f-lm-${id}" placeholder="e.g. 10000"></div>
+    </div>
+    <div class="fg"><label>Notes</label><textarea id="f-nt-${id}" placeholder="Additional details..."></textarea></div>
+  </div>
+  <div class="extra" id="ex-callback-${id}">
+    <div class="fg"><label>Callback Date & Time</label><input type="datetime-local" id="f-cb-${id}"></div>
+    <div class="fg"><label>Notes</label><textarea id="f-cbn-${id}" placeholder="Reason for callback..."></textarea></div>
+  </div>
+  <div class="extra" id="ex-thinking-${id}">
+    <div class="fg"><label>Notes</label><textarea id="f-thn-${id}" placeholder="What is the client considering?"></textarea></div>
+  </div>
+  <div class="extra" id="ex-rejected-${id}">
+    <div class="fg"><label>Rejection Reason</label><select id="f-rr-${id}"><option value="">Select reason...</option><option>Not interested</option><option>Already has a card</option><option>Financial issues</option><option>High fees</option><option>Other</option></select></div>
+    <div class="fg"><label>Notes</label><textarea id="f-rn-${id}" placeholder="Additional details..."></textarea></div>
+  </div>
+  <div class="extra" id="ex-noanswer-${id}">
+    <div class="fg"><label>Notes</label><textarea id="f-nan-${id}" placeholder="e.g. called 3 times, line busy..."></textarea></div>
+  </div>
+  <button class="btn-save" id="sv-${id}" onclick="saveCall(${id})" disabled>Save Result</button>`;
+}
+
+function pickSt(id,st,btn) {
+  selSt[id]=st;
+  btn.closest('.res-grid').querySelectorAll('.res-btn').forEach(b=>b.className='res-btn');
+  btn.classList.add(`sel-${st}`);
+  ['accepted','rejected','noanswer','callback','thinking'].forEach(s=>{ const el=document.getElementById(`ex-${s}-${id}`); if(el) el.classList.remove('show'); });
+  const t=document.getElementById(`ex-${st}-${id}`); if(t) t.classList.add('show');
+  document.getElementById(`sv-${id}`).disabled=false;
+}
+
+function saveCall(id) {
+  const st=selSt[id]; if(!st) return;
+  const d={status:st};
+  if(st==='accepted'){ d.cardType=document.getElementById(`f-ct-${id}`)?.value||''; d.limit=document.getElementById(`f-lm-${id}`)?.value||''; d.notes=document.getElementById(`f-nt-${id}`)?.value||''; }
+  else if(st==='callback'){ d.callbackDate=document.getElementById(`f-cb-${id}`)?.value||''; d.notes=document.getElementById(`f-cbn-${id}`)?.value||''; }
+  else if(st==='thinking'){ d.notes=document.getElementById(`f-thn-${id}`)?.value||''; }
+  else if(st==='rejected'){ d.rejectReason=document.getElementById(`f-rr-${id}`)?.value||''; d.notes=document.getElementById(`f-rn-${id}`)?.value||''; }
+  else if(st==='noanswer'){ d.notes=document.getElementById(`f-nan-${id}`)?.value||''; }
+  d.savedAt=new Date().toLocaleString('en-GB');
+  d.savedBy=CU.name;
+  results[id]=d; saveState();
+  showToast(); renderEmpList(); setTimeout(()=>selClient(id),300);
+}
+
+function renderSaved(r,id) {
+  const lm={accepted:'✅ Accepted',rejected:'❌ Rejected',noanswer:'📵 No Answer',callback:'📅 Callback',thinking:'🤔 Thinking'};
+  const cm={accepted:'sp-a',rejected:'sp-r',noanswer:'sp-n',callback:'sp-c',thinking:'sp-t'};
+  let ex='';
+  if(r.status==='accepted') ex=`${r.cardType?`<div class="sf"><span class="k">Card Type:</span><span class="v">${r.cardType}</span></div>`:''}`+`${r.limit?`<div class="sf"><span class="k">Limit:</span><span class="v">${Number(r.limit).toLocaleString()} EGP</span></div>`:''}`;
+  else if(r.status==='callback') ex=r.callbackDate?`<div class="sf"><span class="k">Callback:</span><span class="v">${r.callbackDate}</span></div>`:'';
+  else if(r.status==='rejected') ex=r.rejectReason?`<div class="sf"><span class="k">Reason:</span><span class="v">${r.rejectReason}</span></div>`:'';
+  return `<div class="saved-box">
+    <div class="saved-hd"><span class="sp ${cm[r.status]}" style="font-size:0.8rem;padding:5px 13px">${lm[r.status]}</span><button class="btn-edit" onclick="editCall(${id})">✏ Edit</button></div>
+    <div class="saved-fields">${ex}${r.notes?`<div class="sf" style="grid-column:1/-1"><span class="k">Notes:</span><span class="v">${r.notes}</span></div>`:''}<div class="sf" style="grid-column:1/-1;color:var(--text3);font-size:0.72rem">Saved ${r.savedAt} · ${r.savedBy||'—'}</div></div>
+  </div>`;
+}
+
+function editCall(id){ delete results[id]; saveState(); renderEmpList(); selClient(id); }
+
+function exportAll() {
+  const lm={accepted:'Accepted',rejected:'Rejected',noanswer:'No Answer',callback:'Callback',thinking:'Thinking'};
+  const rows=clients.map(c=>{ const r=results[c._id]||{}; return {'Name':c.name||'','Mobile':c.mobile||'','Age':c.age||'','Address':c.address||'','Staff':c.staff||'','Status':lm[r.status]||'Pending','Card Type':r.cardType||'','Limit (EGP)':r.limit||'','Reject Reason':r.rejectReason||'','Callback Date':r.callbackDate||'','Notes':r.notes||'','Saved At':r.savedAt||'','Saved By':r.savedBy||''}; });
+  const ws=XLSX.utils.json_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Results');
+  XLSX.writeFile(wb,`QNB_Results_${new Date().toLocaleDateString('en-GB').replace(/\//g,'-')}.xlsx`);
+}
+
+function showToast(){ const t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+</script>
+</body>
+</html>
